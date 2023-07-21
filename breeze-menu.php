@@ -159,7 +159,11 @@ if ( ! class_exists('Breeze_Menu') ) {
 
 		public function create_settings_page_content() {
 			?>
-			<h1>hello</h1>
+			<div class="wrap">
+				<div class="breeze-menu-header">
+					<h3><?php echo esc_html__('Breeze Menu Settings', 'breeze-menu') ?></h3>
+				</div>
+			</div>
 			<?php
 		}
 	}
