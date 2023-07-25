@@ -20,8 +20,7 @@
  * @subpackage Breeze_Menu/public
  * @author     Your Name <email@example.com>
  */
-class Breeze_Menu_Public
-{
+class Breeze_Menu_Public {
 
 	/**
 	 * The ID of this plugin.
@@ -48,11 +47,16 @@ class Breeze_Menu_Public
 	 * @param      string    $Breeze_Menu       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct($Breeze_Menu, $version)
-	{
-
+	public function __construct($Breeze_Menu, $version) {
 		$this->Breeze_Menu = $Breeze_Menu;
 		$this->version = $version;
+		$this->enqueue_scripts();
+		/**
+		 * Including files using URLs is typically disabled for security reasons.
+		 * Below will throw error.
+		 * require plugin_dir_url(__FILE__) . 'partials/breeze-menu-public-display.php';
+		 */
+		require plugin_dir_path(__FILE__) . 'partials/breeze-menu-public-display.php';
 	}
 
 	/**
@@ -60,8 +64,7 @@ class Breeze_Menu_Public
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles()
-	{
+	public function enqueue_styles() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -83,8 +86,7 @@ class Breeze_Menu_Public
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts()
-	{
+	public function enqueue_scripts() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -98,6 +100,6 @@ class Breeze_Menu_Public
 		 * class.
 		 */
 
-		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'js/breeze-menu-public.js', array('jquery'), $this->version, false);
+		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'js/breeze-menu-public.js', array(), $this->version, false);
 	}
 }

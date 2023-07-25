@@ -64,18 +64,6 @@ function setup_constants() {
 define('BREEZE_MENU_VERSION', '1.0.0');
 
 /**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-breeze-menu-activator.php
- */
-// function activate_breeze_menu()
-// {
-// 	setup_constants();
-// 	require_once plugin_dir_path(__FILE__) . 'includes/class-breeze-menu-activator.php';
-// 	// Breeze_Menu_Activator::activate();
-// 	activate();
-// }
-
-/**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-breeze-menu-deactivator.php
  */
@@ -85,7 +73,6 @@ define('BREEZE_MENU_VERSION', '1.0.0');
 // 	breeze_menu_Deactivator::deactivate();
 // }
 
-// register_activation_hook(__FILE__, 'activate_breeze_menu');
 // register_deactivation_hook(__FILE__, 'deactivate_breeze_menu');
 
 /**
@@ -170,3 +157,9 @@ if ( ! class_exists('Breeze_Menu') ) {
 }
 
 Breeze_Menu::init();
+
+if ( ! is_admin() ) {
+	require BREEZE_MENU_PLUGIN_DIR . "/public/class-breeze-menu-public.php";
+	new Breeze_Menu_Public('Breeze Menu', BREEZE_MENU_VERSION);
+}
+

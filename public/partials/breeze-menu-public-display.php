@@ -11,6 +11,8 @@
  * @package    Breeze_Menu
  * @subpackage Breeze_Menu/public/partials
  */
-?>
 
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
+function add_breeze_menu_tag() {
+  echo '<breeze-menu></breeze-menu>';
+}
+add_action( 'wp_footer', 'add_breeze_menu_tag' );
