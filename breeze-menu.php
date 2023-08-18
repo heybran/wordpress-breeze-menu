@@ -149,6 +149,18 @@ if ( ! class_exists('Breeze_Menu') ) {
 			<div class="wrap">
 				<div class="breeze-menu-header">
 					<h3><?php echo esc_html__('Breeze Menu Settings', 'breeze-menu') ?></h3>
+					<!--
+						Need to check database for this settings, on or off
+					 -->
+					<breeze-switch>Show Floating Menu</breeze-switch>
+					<form action="POST" action="options.php" name="breeze-menu-admin-form">
+						<footer style="margin-top: 1em">
+							<breeze-button><?php echo esc_html__('Save', 'save') ?></breeze-button>
+							<breeze-button
+								onclick="BreezeMenuAdmin.addMenuItem()"
+								><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
+						</footer>
+					</form>
 				</div>
 			</div>
 			<?php
@@ -160,6 +172,17 @@ Breeze_Menu::init();
 
 if ( ! is_admin() ) {
 	require BREEZE_MENU_PLUGIN_DIR . "/public/class-breeze-menu-public.php";
-	new Breeze_Menu_Public('Breeze Menu', BREEZE_MENU_VERSION);
+	/**
+	 * This will render on front end like this:
+	 * <script 
+	 * 	type="text/javascript" 
+	 * 	src="http://127.0.0.1:8000/wp-content/plugins/breeze-menu/public/js/breeze-menu-public.js?ver=1.0.0" 
+	 * 	id="breeze-menu-public-js"
+	 * ></script>
+	 */
+	new Breeze_Menu_Public('breeze-menu-public', BREEZE_MENU_VERSION);
+} elseif ( is_admin() ) {
+	require BREEZE_MENU_PLUGIN_DIR . "/admin/class-breeze-menu-admin.php";
+	new Breeze_Menu_Admin('breeze-menu-admin', BREEZE_MENU_VERSION);
 }
 
