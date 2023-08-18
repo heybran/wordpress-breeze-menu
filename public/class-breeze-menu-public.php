@@ -100,6 +100,14 @@ class Breeze_Menu_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'js/breeze-menu-public.js', array(), $this->version, false);
+		/**
+		 * This will render on front end like this:
+		 * <script 
+		 * 	type="text/javascript" 
+		 * 	src="http://127.0.0.1:8000/wp-content/plugins/breeze-menu/public/js/breeze-menu-public.js?ver=1.0.0" 
+		 * 	id="Breeze Menu-js"
+		 * ></script>
+		 */
+		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'js/breeze-menu-public.js', array(), $this->version, false, 'module');
 	}
 }
