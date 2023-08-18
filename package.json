@@ -1,0 +1,37 @@
+{
+  "name": "breeze-menu",
+  "version": "0.1.0",
+  "description": "Add a sleek and modern floating menu to your site, allowing you to display social media icons, important links, or any other type of content.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heybran/wordpress-breeze-menu.git"
+  },
+  "keywords": [
+    "wordpress"
+  ],
+  "author": "Brandon Zhang",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/heybran/wordpress-breeze-menu/issues"
+  },
+  "homepage": "https://github.com/heybran/wordpress-breeze-menu#readme",
+  "prettier": "@wordpress/prettier-config",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
+    "@wordpress/prettier-config": "^2.21.0",
+    "husky": "^8.0.0",
+    "prettier": "^3.0.1",
+    "pretty-quick": "^3.1.3",
+    "vite": "^4.4.9"
+  },
+  "dependencies": {
+    "breeze-components": "file:../../../../../breeze-components"
+  }
+}
