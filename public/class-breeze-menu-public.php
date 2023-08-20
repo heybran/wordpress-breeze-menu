@@ -50,7 +50,9 @@ class Breeze_Menu_Public {
 	public function __construct($Breeze_Menu, $version) {
 		$this->Breeze_Menu = $Breeze_Menu;
 		$this->version = $version;
-		$this->enqueue_scripts();
+
+		// $this->enqueue_scripts();
+		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
 		/**
 		 * Including files using URLs is typically disabled for security reasons.
 		 * Below will throw error.
