@@ -10,6 +10,8 @@
  * @subpackage Breeze_Menu/admin
  */
 
+use Illuminate\Support\Arr;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -52,8 +54,18 @@ class Breeze_Menu_Admin
 
 		$this->Breeze_Menu = $Breeze_Menu;
 		$this->version = $version;
-		$this->enqueue_scripts();
-		$this->enqueue_styles();
+		/**
+		 * Notice: Function wp_enqueue_script was called incorrectly. 
+		 * Scripts and styles should not be registered or enqueued until the wp_enqueue_scripts, 
+		 * admin_enqueue_scripts, or login_enqueue_scripts hooks. 
+		 * This notice was triggered by the breeze-menu-admin handle. 
+		 */
+		// $this->enqueue_scripts();
+
+		// changed to below
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
+		// $this->enqueue_styles();
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'));
 	}
 
 	/**
