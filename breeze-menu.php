@@ -116,18 +116,14 @@ function create_breeze_menu_items_table() {
 
 register_activation_hook(__FILE__, 'create_breeze_menu_items_table');
 
-function test_callback() {
-	return 'Test response';
-}
-
 function breeze_menu_register_routes() {
 	// die('hook triggered');
 	register_rest_route(
 		'breeze-menu-api/v1',
-		'/test',
+		'/menu-items',
 		array(
-			'method' => WP_REST_Server::CREATABLE,
-			'callback' => 'test_callback',
+			'methods' => WP_REST_Server::CREATABLE,
+			'callback' => 'breeze_menu_create_menu_items',
 			'permission_callback' => '__return_true'
 		)
 	);
@@ -137,7 +133,7 @@ function breeze_menu_register_routes() {
 		'breeze-menu-api/v1',
 		'/menu-items',
 		array(
-			'method' => WP_REST_Server::READABLE,
+			'methods' => WP_REST_Server::READABLE,
 			'callback' => 'breeze_menu_get_menu_items',
 			'permission_callback' => '__return_true'
 		)
@@ -159,33 +155,52 @@ function breeze_menu_get_menu_items() {
 }
 
 function breeze_menu_create_menu_items($request) {
-	die($request);
-	// global $wpdb;
-	// $table_name = $wpdb->prefix . 'breeze_menu_items';
+	$body = $request->get_body_params();
+	$body_type = gettype($body);
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'breeze_menu_items';
 
-  // $menu_items = array();
-  // $response = array();
+  $menu_items = array();
 
-  // for ($i = 1; $i <= count($request) / 2; $i++) {
-  //   $icon_key = "icon-" . $i;
-  //   $text_key = "text-" . $i;
-  //   $menu_item = array(
-  //     "icon" => $request[$icon_key],
-  //     "text" => $request[$text_key]
-  //   );
+  for ($i = 1; $i <= count($body) / 2; $i++) {
+    $icon_key = "icon-" . $i;
+    $text_key = "text-" . $i;
+    $menu_item = array(
+      "icon" => $request[$icon_key],
+      "text" => $request[$text_key]
+    );
 
-  //   $menu_items[] = $menu_item;
-  // }
+    $menu_items[] = $menu_item;
+  }
 
-  // // Split the menu items into groups
-  // $groups = array_chunk($menu_items, 2);
-	// die($groups);
-	// // $rows = $wpdb->insert(
-	// // 	$table_name,
+	// Drop existing rows from the table
+	$wpdb->query("TRUNCATE TABLE $table_name");
 
-	// // )
+	foreach($menu_items as $item) {
+		$wpdb->insert(
+			$table_name,
+			array(
+				'menu_icon' => $item['icon'],
+				'menu_text' => $item['text']
+			)
+			);
+	}
 
-	// return $groups;
+	if ($wpdb->last_error) {
+		$response = array(
+			'status' => 'error',
+			'message' => 'Fail to create menu items',
+			'error' => $wpdb->last_error
+		);
+	} else {
+		$response = array(
+			'status' => 'success',
+			'message' => 'Menu items created/updated successfully',
+			'data' => $menu_items
+		);
+	}
+
+	return $response;
 }
 
 /**
@@ -290,13 +305,14 @@ if ( ! class_exists('Breeze_Menu') ) {
 							$table_name = $wpdb->prefix . "breeze_menu_items";
 							$results = $wpdb->get_results("SELECT * FROM $table_name");
 							if ($results) {
+								$index = 0;
 								foreach($results as $row) {
-									$icon = $row->icon;
-									$text = $row->text;
-									echo "Icon: $icon, Text: $text\n";
+									$icon = $row->menu_icon;
+									$text = $row->menu_text;
+									// echo "Icon: $icon, Text: $text\n";
 								}
 							} else {
-								echo "No data found in this table.\n";
+								// echo "No data found in this table.\n";
 							}
 						?>
 						<footer style="margin-top: 1em">
@@ -305,6 +321,42 @@ if ( ! class_exists('Breeze_Menu') ) {
 								onclick="BreezeMenuAdmin.addMenuItem()"
 								><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
 						</footer>
+						<script>
+							fetch('/wp-json/breeze-menu-api/v1/menu-items')
+							.then((res) => {
+								if (res.ok) {
+									return res.json();
+								} else {
+									throw new Error(`There's an error getting menu items.`);
+								}
+							})
+							.then((menus) => {
+								if (menus.length === 0) {
+									return; // do nothing
+								}
+
+								const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
+								const BreezeMenuAdminFormFooter = BreezeMenuAdminForm.querySelector('footer');
+
+								menus.forEach((menu, index) => {
+									const div = document.createElement('div');
+									div.className = 'breeze-menu-item';
+									div.innerHTML = `
+										<breeze-select label="Menu icon" style="width: 10em;" name="icon-${index+1}">
+											<breeze-option ${menu.menu_icon === 'phone' ? 'selected' : ''} value="phone" text="Phone"></breeze-option>
+											<breeze-option ${menu.menu_icon === 'telephone' ? 'selected' : ''} value="telephone" text="Telephone"></breeze-option>
+											<breeze-option ${menu.menu_icon === 'email' ? 'selected' : ''} value="email" text="Email"></breeze-option>
+											<breeze-option ${menu.menu_icon === 'whatsapp' ? 'selected' : ''} value="whatsapp" text="Whatsapp"></breeze-option>
+										</breeze-select>
+										<breeze-text-field label="Menu Text" name="text-${index+1}" value="${menu.menu_text}"></breeze-text-field>
+										<breeze-button theme="icon">
+											<breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
+										</breeze-button>
+									`;
+									BreezeMenuAdminForm.insertBefore(div, BreezeMenuAdminFormFooter);
+								});
+							})
+						</script>
 					</form>
 				</div>
 			</div>
