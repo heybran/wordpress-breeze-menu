@@ -18,16 +18,17 @@ const BreezeMenuAdminFormFooter = BreezeMenuAdminForm.querySelector('footer');
 
 class BreezeMenuAdmin {
   addMenuItem() {
+    const itemsCount = BreezeMenuAdminForm?.querySelectorAll('.breeze-menu-item').length;
     const div = document.createElement('div');
     div.className = 'breeze-menu-item';
     div.innerHTML = `
-      <breeze-select label="Menu icon" style="width: 10em;">
+      <breeze-select label="Menu icon" style="width: 10em;" name="icon-${itemsCount+1}">
         <breeze-option selected value="phone" text="Phone"></breeze-option>
         <breeze-option value="telephone" text="Telephone"></breeze-option>
         <breeze-option value="email" text="Email"></breeze-option>
         <breeze-option value="whatsapp" text="Whatsapp"></breeze-option>
       </breeze-select>
-      <breeze-text-field label="Menu Text"></breeze-text-field>
+      <breeze-text-field label="Menu Text" name="text-${itemsCount+1}"></breeze-text-field>
       <breeze-button theme="icon">
         <breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
       </breeze-button>
