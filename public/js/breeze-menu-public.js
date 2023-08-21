@@ -1,60 +1,45 @@
-class BreezeMenu extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+import { BreezeIcon } from 'breeze-components';
 
-  connectedCallback() {
-    this.render();
-  }
+/* eslint-env browser */
+document.addEventListener( 'DOMContentLoaded', () => {
+	const breezeMenuWrapper = document.createElement( 'div' );
+	breezeMenuWrapper.className = 'breeze-menu-wrapper hidden';
+	document.body.appendChild( breezeMenuWrapper );
 
-  render() {
-    const itemsCount = 3;
-    // Render menu structure based on setting done by admin
-    this.shadowRoot.innerHTML = `
-      <div class="wrapper">
-        ${
-          Array.from({ length: 3 }).map(() => {
-            return `
-              <breeze-menu-item 
-                type="email" 
-                text="contact@example.cn"
-                horizontal-position="left"
-                vertical-position="center"
-                >
-              </breeze-menu-item>`
-          }).join('')
-        }
-      </div>
-    `;
-  }
-}
+	fetch( '/wp-json/breeze-menu/v1/menu-items' )
+		.then( ( res ) => res.json() )
+		.then( ( menus ) => {
+			menus.forEach( ( menu ) => {
+				const div = document.createElement( 'div' );
+				div.className = 'breeze-menu';
+				div.innerHTML = `
+					<span class="breeze-menu__icon"
+						onclick="this.closest('.breeze-menu-wrapper').classList.add('show-texts')"
+					>
+						<breeze-icon icon="${ menu.menu_icon }" style="--size: 1.5em;"></breeze-icon>
+					</span>
+          <span class="breeze-menu__text">${ menu.menu_text }</span>
+        `;
+				breezeMenuWrapper.appendChild( div );
+			} );
 
-customElements.define('breeze-menu', BreezeMenu);
+			const div = document.createElement( 'div' );
+			div.className = 'breeze-menu';
+			div.innerHTML = `
+				<span class="breeze-menu__icon breeze-menu__close" onclick="this.closest('.breeze-menu-wrapper').classList.remove('show-texts')">
+					<breeze-icon icon="cross" style="--size: 1.5em;"></breeze-icon>
+				</span>
+			`;
+			breezeMenuWrapper.appendChild( div );
 
-class BreezeMenuItem extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+			customElements.whenDefined( 'breeze-icon' ).then( () => {
+				breezeMenuWrapper.classList.remove( 'hidden' );
+			} );
+		} );
 
-  connectedCallback() {
-    this.render();
-  }
-
-  get emailSVG() {
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
-  }
-
-  render() {
-    const icon = this.getAttribute('type');
-    this.shadowRoot.innerHTML = `
-      <button>
-        ${this[icon + 'SVG']}
-      </button>
-      <p>${this.getAttribute('text')}</p>
-    `;
-  }
-} 
-
-customElements.define('breeze-menu-item', BreezeMenuItem);
+	document.addEventListener( 'click', ( event ) => {
+		if ( ! event.composedPath().includes( breezeMenuWrapper ) ) {
+			breezeMenuWrapper.classList.remove( 'show-texts' );
+		}
+	} );
+} );

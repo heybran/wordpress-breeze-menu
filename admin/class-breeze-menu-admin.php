@@ -87,7 +87,7 @@ class Breeze_Menu_Admin
 		 * class.
 		 */
 
-		wp_enqueue_style($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'src/css/breeze-menu-admin.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'css/breeze-menu-admin.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Breeze_Menu_Admin
 
 		// original codes, but no need to wait for jQuery
 		// wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'js/breeze-menu-admin.js', array('jquery'), $this->version, false);
-		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'index.js', array(), $this->version, false, 'module');
+		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . '../build/breeze-menu-admin.js', array(), $this->version, false, 'module');
 
 		function add_module_type_attribute($tag, $handle, $src) {
 			if ($handle === 'breeze-menu-admin') {

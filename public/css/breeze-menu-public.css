@@ -2,3 +2,64 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+ .breeze-menu-wrapper.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+ }
+
+.breeze-menu-wrapper {
+  box-sizing: border-box;
+  position: fixed;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
+  color: white;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.breeze-menu {
+  align-items: center;
+  gap: 3px;
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+}
+
+.breeze-menu span {
+  padding: 6px;
+  background-color: #191936;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.breeze-menu__icon {
+  line-height: 0;
+}
+
+.breeze-menu__text {
+  background-color: #191936;  
+  height: 100%;
+  padding-inline: 10px;
+  opacity: 0;
+  transform: translateX(-10%);
+  pointer-events: none;
+  transition: none;
+}
+
+.breeze-menu-wrapper.show-texts .breeze-menu span:last-child {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: initial;
+  transition: .2s ease-in;
+}
+
+.breeze-menu-wrapper:not(.show-texts) .breeze-menu__close {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

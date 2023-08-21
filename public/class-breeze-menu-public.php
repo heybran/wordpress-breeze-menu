@@ -51,8 +51,8 @@ class Breeze_Menu_Public {
 		$this->Breeze_Menu = $Breeze_Menu;
 		$this->version = $version;
 
-		// $this->enqueue_scripts();
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+		add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 		/**
 		 * Including files using URLs is typically disabled for security reasons.
 		 * Below will throw error.
@@ -110,6 +110,14 @@ class Breeze_Menu_Public {
 		 * 	id="Breeze Menu-js"
 		 * ></script>
 		 */
-		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'js/breeze-menu-public.js', array(), $this->version, false, 'module');
+		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . '../build/breeze-menu-public.js', array(), $this->version, false, 'module');
+
+		function add_module_type_attribute($tag, $handle, $src) {
+			if ($handle === 'breeze-menu-public') {
+					$tag = str_replace('<script', '<script type="module"', $tag);
+			}
+			return $tag;
+		}
+		add_filter('script_loader_tag', 'add_module_type_attribute', 10, 3);
 	}
 }
