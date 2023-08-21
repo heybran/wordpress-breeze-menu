@@ -1,0 +1,39 @@
+{
+  "root": true,
+  "parserOptions": {
+      "ecmaVersion": 2016,
+      "ecmaFeatures": {
+          "jsx": true
+      },
+      "requireConfigFile": false,
+      "sourceType": "module"
+  },
+  "extends": [
+      "plugin:@wordpress/eslint-plugin/custom",
+      "plugin:@wordpress/eslint-plugin/esnext",
+      "plugin:@wordpress/eslint-plugin/es5",
+      "plugin:@wordpress/eslint-plugin/jsx-a11y",
+      "plugin:@wordpress/eslint-plugin/i18n"
+  ],
+  "rules": {
+      "no-unused-vars": [
+          "error",
+          {
+              "vars": "all",
+              "args": "after-used",
+              "ignoreRestSiblings": false
+          }
+      ],
+      "no-undef": [
+        "error"
+      ]
+  },
+  "overrides": [
+      {
+          "excludedFiles": "*.min.js",
+          "files": [
+              "**/test/*.js"
+          ]
+      }
+  ]
+}
