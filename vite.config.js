@@ -8,6 +8,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const adminDir = path.resolve(__dirname, 'admin');
+const publicDir = path.resolve(__dirname, 'public');
+const buildDir = path.resolve(__dirname, 'build');
 
 export default defineConfig({
   build: {
@@ -16,11 +18,14 @@ export default defineConfig({
     // minify: true,
     // target: 'esnext',
     rollupOptions: {
-      input: path.resolve(adminDir, 'src/js/breeze-menu-admin.js'),
+      input: {
+        'breeze-menu-admin': path.resolve(adminDir, 'js/breeze-menu-admin.js'),
+        'breeze-menu-public': path.resolve(publicDir, 'js/breeze-menu-public.js'),
+      },
       output: {
-        dir: path.resolve(adminDir, 'build/'),
-        entryFileNames: "[name].js",
+        entryFileNames: '[name].js',
         format: 'es',
+        dir: buildDir,
       },
       // plugins: [,
       //   terser()
