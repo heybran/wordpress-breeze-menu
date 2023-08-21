@@ -75,10 +75,10 @@ function create_breeze_menu_items_table() {
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$sql = "CREATE TABLE $table_name (
-			id INT NOT NULL AUTO_INCREMENT,
-			menu_icon VARCHAR(255) NOT NULL,
-			menu_text VARCHAR(255) NOT NULL,
-			PRIMARY KEY (id)
+		id INT NOT NULL AUTO_INCREMENT,
+		menu_icon VARCHAR(255) NOT NULL,
+		menu_text VARCHAR(255) NOT NULL,
+		PRIMARY KEY (id)
 	) $charset_collate;";
 	
 	/**
@@ -119,7 +119,7 @@ register_activation_hook(__FILE__, 'create_breeze_menu_items_table');
 function breeze_menu_register_routes() {
 	// die('hook triggered');
 	register_rest_route(
-		'breeze-menu-api/v1',
+		'breeze-menu/v1',
 		'/menu-items',
 		array(
 			'methods' => WP_REST_Server::CREATABLE,
@@ -130,7 +130,7 @@ function breeze_menu_register_routes() {
 
 	// die('hook triggered');
 	register_rest_route(
-		'breeze-menu-api/v1',
+		'breeze-menu/v1',
 		'/menu-items',
 		array(
 			'methods' => WP_REST_Server::READABLE,
@@ -221,22 +221,6 @@ function breeze_menu_create_menu_items($request) {
  */
 // require plugin_dir_path(__FILE__) . 'includes/class-breeze-menu.php';
 
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
- */
-// function run_breeze_menu()
-// {
-
-// 	$plugin = new breeze_menu();
-// 	$plugin->run();
-// }
-// run_breeze_menu();
 
 if ( ! class_exists('Breeze_Menu') ) {
 
@@ -247,9 +231,6 @@ if ( ! class_exists('Breeze_Menu') ) {
 		 * @var object
 		 */
 		protected static $instance = null;
-
-		/* Saved Settings */
-		public $settings;
 
 		/**
 		 * Return an instance of this class.
@@ -322,7 +303,7 @@ if ( ! class_exists('Breeze_Menu') ) {
 								><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
 						</footer>
 						<script>
-							fetch('/wp-json/breeze-menu-api/v1/menu-items')
+							fetch('/wp-json/breeze-menu/v1/menu-items')
 							.then((res) => {
 								if (res.ok) {
 									return res.json();
