@@ -162,7 +162,7 @@ class Breeze_Menu_Admin {
 						}
 					?>
 					<footer style="margin-top: 1em">
-						<breeze-button type="submit"><?php echo esc_html__('Save', 'save') ?></breeze-button>
+						<breeze-button type="submit" disabled><?php echo esc_html__('Save', 'save') ?></breeze-button>
 						<breeze-button
 							onclick="BreezeMenuAdmin.addMenuItem()"
 							><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
@@ -188,7 +188,12 @@ class Breeze_Menu_Admin {
 								const div = document.createElement('div');
 								div.className = 'breeze-menu-item';
 								div.innerHTML = `
-									<breeze-select label="Menu icon" style="width: 10em;" name="icon-${index+1}">
+									<breeze-select 
+										label="Menu icon" 
+										style="width: 10em;" 
+										name="icon-${index+1}"
+										onchange="BreezeMenuAdmin.enableSubmit();"
+									>
 										<breeze-option ${menu.menu_icon === 'phone' ? 'selected' : ''} value="phone" text="Phone"></breeze-option>
 										<breeze-option ${menu.menu_icon === 'telephone' ? 'selected' : ''} value="telephone" text="Telephone"></breeze-option>
 										<breeze-option ${menu.menu_icon === 'email' ? 'selected' : ''} value="email" text="Email"></breeze-option>
