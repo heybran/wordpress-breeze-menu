@@ -1,4 +1,4 @@
-import"./assets/alert-cfa4a60b.js";document.addEventListener("DOMContentLoaded",()=>{const e=document.createElement("div");e.className="breeze-menu-wrapper hidden",document.body.appendChild(e),fetch("/wp-json/breeze-menu/v1/menu-items").then(n=>n.json()).then(n=>{n.forEach(c=>{const t=document.createElement("div");t.className="breeze-menu",t.innerHTML=`
+import"./assets/alert-5bda043d.js";document.addEventListener("DOMContentLoaded",()=>{const e=document.createElement("div");e.className="breeze-menu-wrapper hidden",document.body.appendChild(e),fetch("/wp-json/breeze-menu/v1/menu-items").then(n=>n.json()).then(n=>{n.forEach(c=>{const t=document.createElement("div");t.className="breeze-menu",t.innerHTML=`
 					<span class="breeze-menu__icon"
 						onclick="this.closest('.breeze-menu-wrapper').classList.add('show-texts')"
 					>

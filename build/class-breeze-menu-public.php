@@ -18,7 +18,7 @@
  *
  * @package    Breeze_Menu
  * @subpackage Breeze_Menu/public
- * @author     Your Name <email@example.com>
+ * @author     Brandon Zhang <gwonzhang@gmail.com>
  */
 class Breeze_Menu_Public {
 
@@ -51,14 +51,12 @@ class Breeze_Menu_Public {
 		$this->Breeze_Menu = $Breeze_Menu;
 		$this->version = $version;
 
-		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-		add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 		/**
 		 * Including files using URLs is typically disabled for security reasons.
 		 * Below will throw error.
 		 * require plugin_dir_url(__FILE__) . 'partials/breeze-menu-public-display.php';
 		 */
-		require plugin_dir_path(__FILE__) . 'partials/breeze-menu-public-display.php';
+		// require plugin_dir_path(__FILE__) . 'partials/breeze-menu-public-display.php';
 	}
 
 	/**
@@ -67,7 +65,6 @@ class Breeze_Menu_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -89,7 +86,6 @@ class Breeze_Menu_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
