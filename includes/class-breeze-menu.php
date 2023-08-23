@@ -25,11 +25,9 @@
  * @since      1.0.0
  * @package    Breeze_Menu
  * @subpackage Breeze_Menu/includes
- * @author     Brandon Zhang <contact@heybran.cn>
+ * @author     Brandon Zhang <gwonzhang@gmail.com>
  */
-class Breeze_Menu
-{
-
+class Breeze_Menu {
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
@@ -67,17 +65,16 @@ class Breeze_Menu
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct()
-	{
-		if (defined('Breeze_Menu_VERSION')) {
-			$this->version = Breeze_Menu_VERSION;
+	public function __construct() {
+		if (defined('BREEZE_MENU_VERSION')) {
+			$this->version = BREEZE_MENU_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
 		$this->Breeze_Menu = 'breeze-menu';
 
 		$this->load_dependencies();
-		$this->set_locale();
+		// $this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 	}
@@ -98,8 +95,7 @@ class Breeze_Menu
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function load_dependencies()
-	{
+	private function load_dependencies() {
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
@@ -111,7 +107,7 @@ class Breeze_Menu
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-breeze-menu-i18n.php';
+		// require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-breeze-menu-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
@@ -136,11 +132,8 @@ class Breeze_Menu
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function set_locale()
-	{
-
+	private function set_locale() {
 		$plugin_i18n = new Breeze_Menu_i18n();
-
 		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 	}
 
@@ -151,13 +144,13 @@ class Breeze_Menu
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks()
-	{
-
+	private function define_admin_hooks() {
 		$plugin_admin = new Breeze_Menu_Admin($this->get_Breeze_Menu(), $this->get_version());
 
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+		$this->loader->add_action('admin_menu', $plugin_admin, 'load_menu');
+		$this->loader->add_filter('script_loader_tag', $plugin_admin, 'add_type_module', 10, 3);
 	}
 
 	/**
@@ -167,9 +160,7 @@ class Breeze_Menu
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks()
-	{
-
+	private function define_public_hooks() {
 		$plugin_public = new Breeze_Menu_Public($this->get_Breeze_Menu(), $this->get_version());
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
@@ -181,8 +172,7 @@ class Breeze_Menu
 	 *
 	 * @since    1.0.0
 	 */
-	public function run()
-	{
+	public function run() {
 		$this->loader->run();
 	}
 
@@ -193,8 +183,7 @@ class Breeze_Menu
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_Breeze_Menu()
-	{
+	public function get_Breeze_Menu() {
 		return $this->Breeze_Menu;
 	}
 
@@ -204,8 +193,7 @@ class Breeze_Menu
 	 * @since     1.0.0
 	 * @return    Breeze_Menu_Loader    Orchestrates the hooks of the plugin.
 	 */
-	public function get_loader()
-	{
+	public function get_loader() {
 		return $this->loader;
 	}
 
@@ -215,8 +203,7 @@ class Breeze_Menu
 	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
 	 */
-	public function get_version()
-	{
+	public function get_version() {
 		return $this->version;
 	}
 }

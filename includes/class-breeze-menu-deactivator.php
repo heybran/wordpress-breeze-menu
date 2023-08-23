@@ -18,7 +18,7 @@
  * @since      1.0.0
  * @package    Breeze_Menu
  * @subpackage Breeze_Menu/includes
- * @author     Brandon Zhang <contact@heybran.cn>
+ * @author     Brandon Zhang <gwonzhang@gmail.com>
  */
 class Breeze_Menu_Deactivator
 {

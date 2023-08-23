@@ -10,8 +10,6 @@
  * @subpackage Breeze_Menu/admin
  */
 
-use Illuminate\Support\Arr;
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -20,10 +18,9 @@ use Illuminate\Support\Arr;
  *
  * @package    Breeze_Menu
  * @subpackage Breeze_Menu/admin
- * @author     Your Name <email@example.com>
+ * @author     Brandon Zhang <gwonzhang@gmail.com>
  */
-class Breeze_Menu_Admin
-{
+class Breeze_Menu_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -51,21 +48,8 @@ class Breeze_Menu_Admin
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct($Breeze_Menu, $version) {
-
 		$this->Breeze_Menu = $Breeze_Menu;
 		$this->version = $version;
-		/**
-		 * Notice: Function wp_enqueue_script was called incorrectly. 
-		 * Scripts and styles should not be registered or enqueued until the wp_enqueue_scripts, 
-		 * admin_enqueue_scripts, or login_enqueue_scripts hooks. 
-		 * This notice was triggered by the breeze-menu-admin handle. 
-		 */
-		// $this->enqueue_scripts();
-
-		// changed to below
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
-		// $this->enqueue_styles();
-		add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'));
 	}
 
 	/**
@@ -74,7 +58,6 @@ class Breeze_Menu_Admin
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -86,7 +69,6 @@ class Breeze_Menu_Admin
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
 		wp_enqueue_style($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'css/breeze-menu-admin.css', array(), $this->version, 'all');
 	}
 
@@ -96,7 +78,10 @@ class Breeze_Menu_Admin
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
+		$current_screen = get_current_screen();
+		if (strpos($current_screen->base, 'breeze-menu') === false) {
+			return;
+		}
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -108,17 +93,119 @@ class Breeze_Menu_Admin
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		// original codes, but no need to wait for jQuery
-		// wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . 'js/breeze-menu-admin.js', array('jquery'), $this->version, false);
 		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . '../build/breeze-menu-admin.js', array(), $this->version, false, 'module');
+	}
 
-		function add_module_type_attribute($tag, $handle, $src) {
-			if ($handle === 'breeze-menu-admin') {
-					$tag = str_replace('<script', '<script type="module"', $tag);
-			}
-			return $tag;
+	/**
+	 * Register <script type="module"> for the admin JavaScript.
+	 *
+	 * @since    1.0.0
+	 */
+	public function add_type_module($tag, $handle, $src) {
+		if ($handle === 'breeze-menu') {
+				$tag = str_replace('<script', '<script type="module"', $tag);
 		}
-		add_filter('script_loader_tag', 'add_module_type_attribute', 10, 3);
+		return $tag;
+	}
+
+	/**
+	 * Register the Breeze Menu for the admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function load_menu() {
+		$page_title = esc_html__('Breeze Menu', 'breeze-menu');
+		$menu_title = esc_html__('Breeze Menu', 'breeze-menu');
+		$capability = 'manage_options';
+		$slug = 'breeze-menu';
+		$callback = array($this, 'create_settings_page_content');
+		$icon = BREEZE_MENU_PLUGIN_URL . 'images/breeze_menu_icon.png';
+		$position = 100;
+
+		add_menu_page($page_title, $menu_title, $capability, $slug, $callback, $icon, $position);
+	}
+
+	/**
+	 * Register the JavaScript for the admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function create_settings_page_content() {
+		?>
+		<div class="wrap">
+			<div class="breeze-menu-header">
+				<h3><?php echo esc_html__('Breeze Menu Settings', 'breeze-menu') ?></h3>
+				<breeze-switch>Show Floating Menu</breeze-switch>
+				<form action="POST" action="options.php" name="breeze-menu-admin-form" id="breeze-menu-admin-form">
+					<?php 
+						global $wpdb;
+						/**
+						 * if setting the wrong table prefix,
+						 * $table_name = $wpdb->prefix . "breeze-menu-items";
+						 * and without adding these at top of wp-config.php
+						 * define('WP_DEBUG', true);
+						 * define('WP_DEBUG_LOG', true);
+						 * define('WP_DEBUG_DISPLAY', false);
+						 * no error displaying on frontend, so it's hard to debug
+						 */
+						$table_name = $wpdb->prefix . "breeze_menu_items";
+						$results = $wpdb->get_results("SELECT * FROM $table_name");
+						if ($results) {
+							$index = 0;
+							foreach($results as $row) {
+								$icon = $row->menu_icon;
+								$text = $row->menu_text;
+								// echo "Icon: $icon, Text: $text\n";
+							}
+						} else {
+							// echo "No data found in this table.\n";
+						}
+					?>
+					<footer style="margin-top: 1em">
+						<breeze-button type="submit"><?php echo esc_html__('Save', 'save') ?></breeze-button>
+						<breeze-button
+							onclick="BreezeMenuAdmin.addMenuItem()"
+							><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
+					</footer>
+					<script>
+						fetch('/wp-json/breeze-menu/v1/menu-items')
+						.then((res) => {
+							if (res.ok) {
+								return res.json();
+							} else {
+								throw new Error(`There's an error getting menu items.`);
+							}
+						})
+						.then((menus) => {
+							if (menus.length === 0) {
+								return; // do nothing
+							}
+
+							const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
+							const BreezeMenuAdminFormFooter = BreezeMenuAdminForm.querySelector('footer');
+
+							menus.forEach((menu, index) => {
+								const div = document.createElement('div');
+								div.className = 'breeze-menu-item';
+								div.innerHTML = `
+									<breeze-select label="Menu icon" style="width: 10em;" name="icon-${index+1}">
+										<breeze-option ${menu.menu_icon === 'phone' ? 'selected' : ''} value="phone" text="Phone"></breeze-option>
+										<breeze-option ${menu.menu_icon === 'telephone' ? 'selected' : ''} value="telephone" text="Telephone"></breeze-option>
+										<breeze-option ${menu.menu_icon === 'email' ? 'selected' : ''} value="email" text="Email"></breeze-option>
+										<breeze-option ${menu.menu_icon === 'whatsapp' ? 'selected' : ''} value="whatsapp" text="Whatsapp"></breeze-option>
+									</breeze-select>
+									<breeze-text-field label="Menu Text" name="text-${index+1}" value="${menu.menu_text}"></breeze-text-field>
+									<breeze-button theme="icon">
+										<breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
+									</breeze-button>
+								`;
+								BreezeMenuAdminForm.insertBefore(div, BreezeMenuAdminFormFooter);
+							});
+						})
+					</script>
+				</form>
+			</div>
+		</div>
+		<?php
 	}
 }
