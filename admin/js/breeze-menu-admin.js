@@ -16,14 +16,20 @@ import {
 document.addEventListener( 'DOMContentLoaded', () => {
   const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
   const BreezeMenuAdminFormFooter = BreezeMenuAdminForm.querySelector('footer');
-  
+  const submitButton = BreezeMenuAdminForm?.querySelector('breeze-button[type="submit"]');
+
   class BreezeMenuAdmin {
     addMenuItem() {
       const itemsCount = BreezeMenuAdminForm?.querySelectorAll('.breeze-menu-item').length;
       const div = document.createElement('div');
       div.className = 'breeze-menu-item';
       div.innerHTML = `
-        <breeze-select label="Menu icon" style="width: 10em;" name="icon-${itemsCount+1}">
+        <breeze-select 
+          label="Menu icon" 
+          style="width: 10em;" 
+          name="icon-${itemsCount+1}"
+          onchange="BreezeMenuAdmin.enableSubmit();"
+          >
           <breeze-option selected value="phone" text="Phone"></breeze-option>
           <breeze-option value="telephone" text="Telephone"></breeze-option>
           <breeze-option value="email" text="Email"></breeze-option>
@@ -36,6 +42,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
       `;
       BreezeMenuAdminForm.insertBefore(div, BreezeMenuAdminFormFooter);
     }
+
+    enableSubmit() {
+      submitButton.removeAttribute('disabled');
+    }
   }
   
   window.BreezeMenuAdmin = new BreezeMenuAdmin();
@@ -43,6 +53,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
   // @ts-ignore
   document.querySelector( 'form[name=breeze-menu-admin-form]' ).addEventListener( 'submit', function( event ) {
     event.preventDefault();
+    submitButton.setAttribute('loading', '');
     const formData = new FormData( this );
     fetch( '/wp-json/breeze-menu/v1/menu-items', {
       method: 'POST',
@@ -50,12 +61,23 @@ document.addEventListener( 'DOMContentLoaded', () => {
     } )
       .then( ( response ) => {
         if ( response.ok ) {
+          submitButton?.setAttribute('disabled', '');
           return response.text();
         }
         return Promise.reject( new Error( 'Form submission failed' ) );
       } )
       .catch( ( error ) => {
         console.error( error );
+      } )
+      .finally( () => {
+        submitButton.removeAttribute('loading');
       } );
   } );
+
+  BreezeMenuAdminForm?.addEventListener('click', (e) => {
+    if (e.target.closest('.breeze-menu-item breeze-button')) {
+      e.target.closest('.breeze-menu-item').remove();
+      window.BreezeMenuAdmin.enableSubmit();
+    }
+  });
 } );
