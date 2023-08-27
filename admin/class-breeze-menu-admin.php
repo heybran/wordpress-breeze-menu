@@ -94,6 +94,11 @@ class Breeze_Menu_Admin {
 		 * class.
 		 */
 		wp_enqueue_script($this->Breeze_Menu, plugin_dir_url(__FILE__) . '../build/breeze-menu-admin.js', array(), $this->version, false, 'module');
+		// https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/#cookie-authentication
+		wp_localize_script($this->Breeze_Menu, 'breezeMenuApiSettings', array(
+			'root' => esc_url_raw(rest_url()),
+			'nonce' => wp_create_nonce('wp_rest')
+		));
 	}
 
 	/**
@@ -176,15 +181,11 @@ class Breeze_Menu_Admin {
 								throw new Error(`There's an error getting menu items.`);
 							}
 						})
-						.then((menus) => {
-							if (menus.length === 0) {
-								return; // do nothing
-							}
-
+						.then((settings) => {
 							const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
 							const BreezeMenuAdminFormFooter = BreezeMenuAdminForm.querySelector('footer');
 
-							menus.forEach((menu, index) => {
+							settings.breeze_menu_items.forEach((menu, index) => {
 								const div = document.createElement('div');
 								div.className = 'breeze-menu-item';
 								div.innerHTML = `
@@ -199,7 +200,12 @@ class Breeze_Menu_Admin {
 										<breeze-option ${menu.menu_icon === 'email' ? 'selected' : ''} value="email" text="Email"></breeze-option>
 										<breeze-option ${menu.menu_icon === 'whatsapp' ? 'selected' : ''} value="whatsapp" text="Whatsapp"></breeze-option>
 									</breeze-select>
-									<breeze-text-field label="Menu Text" name="text-${index+1}" value="${menu.menu_text}"></breeze-text-field>
+									<breeze-text-field 
+										label="Menu Text" 
+										name="text-${index+1}" 
+										value="${menu.menu_text}"
+										oninput="BreezeMenuAdmin.enableSubmit()"
+										></breeze-text-field>
 									<breeze-button theme="icon">
 										<breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
 									</breeze-button>
