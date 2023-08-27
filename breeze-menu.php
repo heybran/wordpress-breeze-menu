@@ -59,6 +59,18 @@ function activate_breeze_menu() {
 register_activation_hook( __FILE__, 'activate_breeze_menu' );
 
 /**
+ * The code that runs during plugin deactivation.
+ * This action is documented in includes/class-breeze-menu-deactivator.php
+ */
+function deactivate_breeze_menu() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-breeze-menu-deactivator.php';
+	Breeze_Menu_Deactivator::deactivate();
+}
+
+register_deactivation_hook( __FILE__, 'deactivate_breeze_menu' );
+
+
+/**
  * Previously, when visiting /wp-json/ it returned 404,
  * the reason is that permalink is plain type when wordpress is initially installed,
  * changing to other pretty permalink fixes that.
@@ -72,7 +84,9 @@ function register_breeze_menu_api_routes() {
 		array(
 			'methods' => WP_REST_Server::CREATABLE,
 			'callback' => 'create_breeze_menu_items',
-			'permission_callback' => '__return_true'
+			'permission_callback' => function () {
+				return current_user_can('edit_others_posts');
+			},
 		)
 	);
 
@@ -88,71 +102,63 @@ function register_breeze_menu_api_routes() {
 }
 
 function get_breeze_menu_items() {
-	global $wpdb;
-	$table_name = $wpdb->prefix . 'breeze_menu_items';
-	$results = $wpdb->get_results("SELECT * FROM $table_name");
-	return $results;
+	$breeze_menu_settings = get_option('breeze-menu-settings');
+	return $breeze_menu_settings;
 }
 
 function create_breeze_menu_items($request) {
 	$body = $request->get_body_params();
-	$body_type = gettype($body);
-	global $wpdb;
-	$table_name = $wpdb->prefix . 'breeze_menu_items';
 
-	$menu_items = array();
+	$breeze_menu_settings = [
+		'breeze_menu_show' => 'on',
+		'breeze_menu_items' => []
+	];
 
 	for ($i = 1; $i <= count($body) / 2; $i++) {
 		$icon_key = "icon-" . $i;
 		$text_key = "text-" . $i;
 		$menu_item = array(
-			"icon" => $request[$icon_key],
-			"text" => $request[$text_key]
+			"menu_icon" => $request[$icon_key],
+			"menu_text" => $request[$text_key]
 		);
 
-		$menu_items[] = $menu_item;
+		$breeze_menu_settings['breeze_menu_items'][] = $menu_item;
 	}
+
+	$result = update_option('breeze-menu-settings', $breeze_menu_settings);
 
 	// Drop existing rows from the table
-	$wpdb->query("TRUNCATE TABLE $table_name");
+	/**
+	 * This will cause unexpected bug as if $wpdb->insert() fails,
+	 * database table will be cleared out with no rows left.
+	 */
+	// $wpdb->query("TRUNCATE TABLE $table_name");
 
-	foreach($menu_items as $item) {
-		$wpdb->insert(
-			$table_name,
-			array(
-				'menu_icon' => $item['icon'],
-				'menu_text' => $item['text']
-			)
-			);
-	}
+	// foreach($menu_items as $item) {
+	// 	$wpdb->insert(
+	// 		$table_name,
+	// 		array(
+	// 			'menu_icon' => $item['icon'],
+	// 			'menu_text' => $item['text']
+	// 		)
+	// 		);
+	// }
 
-	if ($wpdb->last_error) {
+	if (!$result) {
 		$response = array(
 			'status' => 'error',
-			'message' => 'Fail to create menu items',
-			'error' => $wpdb->last_error
+			'message' => 'Fail to add breeze-menu-settings',
 		);
+		wp_send_json($response, 500);
 	} else {
 		$response = array(
 			'status' => 'success',
 			'message' => 'Menu items created/updated successfully',
-			'data' => $menu_items
+			'data' => $breeze_menu_settings
 		);
+		wp_send_json($response, 200);
 	}
-
-	return $response;
 }
-
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-breeze-menu-deactivator.php
- */
-function deactivate_breeze_menu() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-breeze-menu-deactivator.php';
-	Breeze_Menu_Deactivator::deactivate();
-}
-
-register_deactivation_hook( __FILE__, 'deactivate_breeze_menu' );
 
 /**
  * The core plugin class that is used to define internationalization,
