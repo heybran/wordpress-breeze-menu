@@ -35,7 +35,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
           <breeze-option value="email" text="Email"></breeze-option>
           <breeze-option value="whatsapp" text="Whatsapp"></breeze-option>
         </breeze-select>
-        <breeze-text-field label="Menu Text" name="text-${itemsCount+1}"></breeze-text-field>
+        <breeze-text-field 
+          label="Menu Text" 
+          name="text-${itemsCount+1}"
+          oninput="BreezeMenuAdmin.enableSubmit()"
+        ></breeze-text-field>
         <breeze-button theme="icon">
           <breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
         </breeze-button>
@@ -57,6 +61,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
     const formData = new FormData( this );
     fetch( '/wp-json/breeze-menu/v1/menu-items', {
       method: 'POST',
+      headers: {
+        'X-WP-Nonce': breezeMenuApiSettings.nonce,
+      },
       body: formData,
     } )
       .then( ( response ) => {
