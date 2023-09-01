@@ -1,15 +1,19 @@
-import { BreezeIcon } from 'breeze-components';
+// import { BreezeIcon } from 'breeze-components';
+
+import 'cucumber-components/dist/components/icon/icon.js';
 
 /* eslint-env browser */
 document.addEventListener( 'DOMContentLoaded', () => {
-	const breezeMenuWrapper = document.createElement( 'div' );
-	breezeMenuWrapper.className = 'breeze-menu-wrapper hidden';
-	document.body.appendChild( breezeMenuWrapper );
-
 	fetch( '/wp-json/breeze-menu/v1/menu-items' )
 		.then( ( res ) => res.json() )
-		.then( ( menus ) => {
-			menus.forEach( ( menu ) => {
+		.then( ( settings ) => {
+			if ( settings.breeze_menu_show === 'off' ) {
+				return;
+			}
+			const breezeMenuWrapper = document.createElement( 'div' );
+			breezeMenuWrapper.className = 'breeze-menu-wrapper hidden';
+			document.body.appendChild( breezeMenuWrapper );
+			settings.breeze_menu_items.forEach( ( menu ) => {
 				const div = document.createElement( 'div' );
 				div.className = 'breeze-menu';
 				div.innerHTML = `
@@ -36,10 +40,4 @@ document.addEventListener( 'DOMContentLoaded', () => {
 				breezeMenuWrapper.classList.remove( 'hidden' );
 			} );
 		} );
-
-	document.addEventListener( 'click', ( event ) => {
-		if ( ! event.composedPath().includes( breezeMenuWrapper ) ) {
-			breezeMenuWrapper.classList.remove( 'show-texts' );
-		}
-	} );
 } );
