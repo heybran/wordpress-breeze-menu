@@ -114,12 +114,24 @@ function create_breeze_menu_items($request) {
 		'breeze_menu_items' => []
 	];
 
-	for ($i = 1; $i <= count($body) / 2; $i++) {
+	$menu_items = [];
+
+	if (isset($body['breeze-menu-show'])) {
+		$breeze_menu_settings['breeze_menu_show'] = 'on';
+		$menu_items = array_filter($body, function ($key) {
+			return $key !== 'breeze-menu-show';
+		}, ARRAY_FILTER_USE_KEY);
+	} else {
+		$breeze_menu_settings['breeze_menu_show'] = 'off';
+		$menu_items = $body;
+	}
+
+	for ($i = 1; $i <= count($menu_items) / 2; $i++) {
 		$icon_key = "icon-" . $i;
 		$text_key = "text-" . $i;
 		$menu_item = array(
-			"menu_icon" => $request[$icon_key],
-			"menu_text" => $request[$text_key]
+			"menu_icon" => $body[$icon_key],
+			"menu_text" => $body[$text_key]
 		);
 
 		$breeze_menu_settings['breeze_menu_items'][] = $menu_item;
