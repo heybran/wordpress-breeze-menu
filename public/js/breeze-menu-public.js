@@ -1,4 +1,6 @@
-import { BreezeIcon } from 'breeze-components';
+// import { BreezeIcon } from 'breeze-components';
+
+import 'cucumber-components/dist/components/icon/icon.js';
 
 /* eslint-env browser */
 document.addEventListener( 'DOMContentLoaded', () => {
