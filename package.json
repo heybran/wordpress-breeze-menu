@@ -37,6 +37,6 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "breeze-components": "file:../../../../../breeze-components"
+    "cucumber-components": "file:../../../../../breeze-components/cucumber-components-0.0.1.tgz"
   }
 }
