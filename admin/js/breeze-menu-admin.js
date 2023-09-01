@@ -4,14 +4,13 @@
  * Uncaught TypeError: Failed to resolve module specifier "breeze-components". 
  * Relative references must start with either "/", "./", or "../".
  */
-import { 
-  BreezeTextField, 
-  BreezeButton,
-  BreezeSwitch,
-  BreezeOption,
-  BreezeSelect,
-  BreezeIcon,
-} from "breeze-components";
+
+import 'cucumber-components/dist/components/text-field/text-field.js';
+import 'cucumber-components/dist/components/checkbox/checkbox.js';
+import 'cucumber-components/dist/components/option/option.js';
+import 'cucumber-components/dist/components/select/select.js';
+import 'cucumber-components/dist/components/icon/icon.js';
+import 'cucumber-components/dist/components/button/button.js';
 
 document.addEventListener( 'DOMContentLoaded', () => {
   const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
