@@ -140,7 +140,6 @@ class Breeze_Menu_Admin {
 		<div class="wrap">
 			<div class="breeze-menu-header">
 				<h3><?php echo esc_html__('Breeze Menu Settings', 'breeze-menu') ?></h3>
-				<breeze-switch>Show Floating Menu</breeze-switch>
 				<form action="POST" action="options.php" name="breeze-menu-admin-form" id="breeze-menu-admin-form">
 					<?php 
 						global $wpdb;
@@ -165,7 +164,7 @@ class Breeze_Menu_Admin {
 						} else {
 							// echo "No data found in this table.\n";
 						}
-					?>
+						?>
 					<footer style="margin-top: 1em">
 						<breeze-button type="submit" disabled><?php echo esc_html__('Save', 'save') ?></breeze-button>
 						<breeze-button
@@ -212,6 +211,18 @@ class Breeze_Menu_Admin {
 								`;
 								BreezeMenuAdminForm.insertBefore(div, BreezeMenuAdminFormFooter);
 							});
+
+							const checkbox = document.createElement('cc-checkbox');
+							checkbox.setAttribute('name', 'breeze-menu-show');
+							checkbox.setAttribute('onchange', 'BreezeMenuAdmin.enableSubmit();');
+							if (settings.breeze_menu_show === 'on') {
+								checkbox.setAttribute('checked', '');
+							}
+							checkbox.textContent = 'Show Floating Menu';
+							checkbox.style.marginTop = '1em';
+							// fixes for not setting this up in original components.
+							checkbox.style.display = 'inline-block';
+							BreezeMenuAdminForm.insertBefore(checkbox, BreezeMenuAdminFormFooter);
 						})
 					</script>
 				</form>
