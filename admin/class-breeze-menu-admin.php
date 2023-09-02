@@ -141,6 +141,7 @@ class Breeze_Menu_Admin {
 			<div class="breeze-menu-header">
 				<h3><?php echo esc_html__('Breeze Menu Settings', 'breeze-menu') ?></h3>
 				<form action="POST" action="options.php" name="breeze-menu-admin-form" id="breeze-menu-admin-form">
+					<section class="breeze-menu-item-wrapper"></section>
 					<?php 
 						global $wpdb;
 						/**
@@ -152,25 +153,73 @@ class Breeze_Menu_Admin {
 						 * define('WP_DEBUG_DISPLAY', false);
 						 * no error displaying on frontend, so it's hard to debug
 						 */
-						$table_name = $wpdb->prefix . "breeze_menu_items";
-						$results = $wpdb->get_results("SELECT * FROM $table_name");
-						if ($results) {
-							$index = 0;
-							foreach($results as $row) {
-								$icon = $row->menu_icon;
-								$text = $row->menu_text;
-								// echo "Icon: $icon, Text: $text\n";
-							}
-						} else {
-							// echo "No data found in this table.\n";
-						}
+						// $table_name = $wpdb->prefix . "breeze_menu_items";
+						// $results = $wpdb->get_results("SELECT * FROM $table_name");
+						// if ($results) {
+						// 	$index = 0;
+						// 	foreach($results as $row) {
+						// 		$icon = $row->menu_icon;
+						// 		$text = $row->menu_text;
+						// 		// echo "Icon: $icon, Text: $text\n";
+						// 	}
+						// } else {
+						// 	// echo "No data found in this table.\n";
+						// }
+						$breeze_menu_settings = get_option('breeze-menu-settings');
 						?>
-					<footer style="margin-top: 1em">
-						<breeze-button type="submit" disabled><?php echo esc_html__('Save', 'save') ?></breeze-button>
-						<breeze-button
-							onclick="BreezeMenuAdmin.addMenuItem()"
-							><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
-					</footer>
+					<breeze-button
+						onclick="BreezeMenuAdmin.addMenuItem()"
+						><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
+					<hr />
+					<cc-radio-group 
+						name="breeze-menu-position" 
+						label="Menu Position" 
+						style="display: block;"
+						onchange="BreezeMenuAdmin.enableSubmit();"
+					>
+						<cc-radio 
+							value="left:center" 
+							label="Left Center" 
+							<?php if ($breeze_menu_settings['breeze_menu_position'] === 'left:center') echo 'checked'; ?>
+						></cc-radio>
+						<cc-radio 
+							value="left:bottom" 
+							label="Left Bottom"
+							<?php if ($breeze_menu_settings['breeze_menu_position'] === 'left:bottom') echo 'checked'; ?>
+						></cc-radio>
+						<cc-radio 
+							value="right:center" 
+							label="Right Center"
+							<?php if ($breeze_menu_settings['breeze_menu_position'] === 'right:center') echo 'checked'; ?>
+						></cc-radio>
+						<cc-radio 
+							value="right:bottom" 
+							label="Right Bottom"
+							<?php if ($breeze_menu_settings['breeze_menu_position'] === 'right:bottom') echo 'checked'; ?>
+						></cc-radio>
+					</cc-radio-group>
+					<breeze-text-field 
+						label="Menu background color" 
+						name="breeze-menu-background-color"
+						oninput="BreezeMenuAdmin.enableSubmit();"
+						value="<?php echo $breeze_menu_settings['breeze_menu_background_color']; ?>"
+					>
+					</breeze-text-field>
+					<breeze-text-field 
+						label="Menu text color" 
+						name="breeze-menu-text-color"
+						oninput="BreezeMenuAdmin.enableSubmit();"
+						value="<?php echo $breeze_menu_settings['breeze_menu_text_color']; ?>"
+					></breeze-text-field>
+					<cc-checkbox 
+						name="breeze-menu-show" 
+						onchange="BreezeMenuAdmin.enableSubmit();" 
+						style="display: block;"
+						<?php if ($breeze_menu_settings['breeze_menu_show'] === 'on') echo 'checked'; ?>
+					>
+						Show Floating Menu
+					</cc-checkbox>
+					<breeze-button type="submit" variant="primary" disabled><?php echo esc_html__('Save', 'save') ?></breeze-button>
 					<script>
 						fetch('/wp-json/breeze-menu/v1/menu-items')
 						.then((res) => {
@@ -182,7 +231,7 @@ class Breeze_Menu_Admin {
 						})
 						.then((settings) => {
 							const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
-							const BreezeMenuAdminFormFooter = BreezeMenuAdminForm.querySelector('footer');
+							const BreezeMenuAdminItemWrapper = BreezeMenuAdminForm.querySelector('.breeze-menu-item-wrapper');
 
 							settings.breeze_menu_items.forEach((menu, index) => {
 								const div = document.createElement('div');
@@ -197,10 +246,9 @@ class Breeze_Menu_Admin {
 										<breeze-option ${menu.menu_icon === 'phone' ? 'selected' : ''} value="phone" text="Phone"></breeze-option>
 										<breeze-option ${menu.menu_icon === 'telephone' ? 'selected' : ''} value="telephone" text="Telephone"></breeze-option>
 										<breeze-option ${menu.menu_icon === 'email' ? 'selected' : ''} value="email" text="Email"></breeze-option>
-										<breeze-option ${menu.menu_icon === 'whatsapp' ? 'selected' : ''} value="whatsapp" text="Whatsapp"></breeze-option>
 									</breeze-select>
 									<breeze-text-field 
-										label="Menu Text" 
+										label="Menu text" 
 										name="text-${index+1}" 
 										value="${menu.menu_text}"
 										oninput="BreezeMenuAdmin.enableSubmit()"
@@ -209,20 +257,8 @@ class Breeze_Menu_Admin {
 										<breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
 									</breeze-button>
 								`;
-								BreezeMenuAdminForm.insertBefore(div, BreezeMenuAdminFormFooter);
+								BreezeMenuAdminItemWrapper.appendChild(div);
 							});
-
-							const checkbox = document.createElement('cc-checkbox');
-							checkbox.setAttribute('name', 'breeze-menu-show');
-							checkbox.setAttribute('onchange', 'BreezeMenuAdmin.enableSubmit();');
-							if (settings.breeze_menu_show === 'on') {
-								checkbox.setAttribute('checked', '');
-							}
-							checkbox.textContent = 'Show Floating Menu';
-							checkbox.style.marginTop = '1em';
-							// fixes for not setting this up in original components.
-							checkbox.style.display = 'inline-block';
-							BreezeMenuAdminForm.insertBefore(checkbox, BreezeMenuAdminFormFooter);
 						})
 					</script>
 				</form>
