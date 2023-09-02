@@ -107,35 +107,70 @@ function get_breeze_menu_items() {
 }
 
 function create_breeze_menu_items($request) {
-	$body = $request->get_body_params();
+	// for posting with FormData()
+	// $body = $request->get_body_params();
+
+	/**
+	 * If you are trying to retrieve the JSON data from a POST request in WordPress PHP, 
+	 * you can use the `file_get_contents()` function along with `json_decode()` 
+	 * to parse the JSON data. Here's an example:
+	 * In this code, we use `file_get_contents('php://input')` to 
+	 * read the raw POST data from the request. 
+	 * Then, we use `json_decode()` to decode the JSON data into an 
+	 * associative array by passing `true` as the second argument. 
+	 */
+	$json_data = file_get_contents('php://input');
+	$body = json_decode($json_data, true);
 
 	$breeze_menu_settings = [
 		'breeze_menu_show' => 'on',
-		'breeze_menu_items' => []
+		'breeze_menu_items' => [],
+		'breeze_menu_background_color' => '#191936',
+		'breeze_menu_text_color' => '#ffffff',
+		'breeze_menu_position' => 'left:center',
 	];
+
+	if (!array_key_exists('breeze-menu-show', $body)) {
+		$breeze_menu_settings['breeze_menu_show'] = 'off';
+	} 
+
+	$breeze_menu_settings['breeze_menu_background_color'] = $body['breeze-menu-background-color'];
+	$breeze_menu_settings['breeze_menu_text_color'] = $body['breeze-menu-text-color'];
+	$breeze_menu_settings['breeze_menu_position'] = $body['breeze-menu-position'];
 
 	$menu_items = [];
 
-	if (isset($body['breeze-menu-show'])) {
-		$breeze_menu_settings['breeze_menu_show'] = 'on';
-		$menu_items = array_filter($body, function ($key) {
-			return $key !== 'breeze-menu-show';
-		}, ARRAY_FILTER_USE_KEY);
-	} else {
-		$breeze_menu_settings['breeze_menu_show'] = 'off';
-		$menu_items = $body;
+	if (count($body['menus']) > 0) {
+		foreach($body['menus'] as $menu) {
+			$menu_items[] = array(
+				"menu_icon" => $menu['icon'],
+				"menu_text" => $menu['text']
+			);
+		}
 	}
 
-	for ($i = 1; $i <= count($menu_items) / 2; $i++) {
-		$icon_key = "icon-" . $i;
-		$text_key = "text-" . $i;
-		$menu_item = array(
-			"menu_icon" => $body[$icon_key],
-			"menu_text" => $body[$text_key]
-		);
+	$breeze_menu_settings['breeze_menu_items'] = $menu_items;
 
-		$breeze_menu_settings['breeze_menu_items'][] = $menu_item;
-	}
+	// if (isset($body['breeze-menu-show'])) {
+	// 	$breeze_menu_settings['breeze_menu_show'] = 'on';
+	// 	$menu_items = array_filter($body, function ($key) {
+	// 		return $key !== 'breeze-menu-show';
+	// 	}, ARRAY_FILTER_USE_KEY);
+	// } else {
+	// 	$breeze_menu_settings['breeze_menu_show'] = 'off';
+	// 	$menu_items = $body;
+	// }
+
+	// for ($i = 1; $i <= count($menu_items) / 2; $i++) {
+	// 	$icon_key = "icon-" . $i;
+	// 	$text_key = "text-" . $i;
+	// 	$menu_item = array(
+	// 		"menu_icon" => $body[$icon_key],
+	// 		"menu_text" => $body[$text_key]
+	// 	);
+
+	// 	$breeze_menu_settings['breeze_menu_items'][] = $menu_item;
+	// }
 
 	$result = update_option('breeze-menu-settings', $breeze_menu_settings);
 
