@@ -3,11 +3,11 @@
  * included in this file.
  */
 
- .breeze-menu-wrapper.hidden {
+.breeze-menu-wrapper.hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
- }
+}
 
 .breeze-menu-wrapper {
   box-sizing: border-box;
@@ -30,15 +30,12 @@
   align-items: stretch;
 }
 
-.breeze-menu span {
+.breeze-menu__icon {
+  line-height: 0;
   padding: 6px;
   background-color: #191936;
   border-radius: 4px;
   box-sizing: border-box;
-}
-
-.breeze-menu__icon {
-  line-height: 0;
 }
 
 .breeze-menu__text {
@@ -49,6 +46,9 @@
   transform: translateX(-10%);
   pointer-events: none;
   transition: none;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 6px 12px;
 }
 
 .breeze-menu-wrapper.show-texts .breeze-menu span:last-child {
