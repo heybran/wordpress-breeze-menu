@@ -3,9 +3,29 @@
  * included in this file.
  */
 
+[name="breeze-menu-admin-form"] {
+  max-width: 500px;
+  background: white;
+  padding: 1rem 2rem 2rem 2rem;
+  border-radius: .5em;
+}
 .breeze-menu-item {
-  display: flex; 
   gap: .5em; 
-  align-items: flex-end;
+  margin-top: 1em;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+}
+
+[name="breeze-menu-admin-form"] footer [type="submit"] {
+  margin-top: 1em;
+}
+
+[name="breeze-menu-admin-form"] breeze-text-field,
+[name="breeze-menu-admin-form"] cc-text-field {
+  display: block;
+}
+
+[name="breeze-menu-admin-form"] section ~ * {
   margin-top: 1em;
 }
