@@ -11,10 +11,12 @@ import 'cucumber-components/dist/components/option/option.js';
 import 'cucumber-components/dist/components/select/select.js';
 import 'cucumber-components/dist/components/icon/icon.js';
 import 'cucumber-components/dist/components/button/button.js';
+import 'cucumber-components/dist/components/radio/radio.js';
+import 'cucumber-components/dist/components/radio-group/radio-group.js';
 
 document.addEventListener( 'DOMContentLoaded', () => {
   const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
-  const BreezeMenuAdminFormFooter = BreezeMenuAdminForm.querySelector('footer');
+  const BreezeMenuAdminItemWrapper = BreezeMenuAdminForm.querySelector('.breeze-menu-item-wrapper');
   const submitButton = BreezeMenuAdminForm?.querySelector('breeze-button[type="submit"]');
 
   class BreezeMenuAdmin {
@@ -32,7 +34,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
           <breeze-option selected value="phone" text="Phone"></breeze-option>
           <breeze-option value="telephone" text="Telephone"></breeze-option>
           <breeze-option value="email" text="Email"></breeze-option>
-          <breeze-option value="whatsapp" text="Whatsapp"></breeze-option>
         </breeze-select>
         <breeze-text-field 
           label="Menu Text" 
@@ -43,7 +44,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
           <breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
         </breeze-button>
       `;
-      BreezeMenuAdminForm.insertBefore(div, BreezeMenuAdminFormFooter);
+      BreezeMenuAdminItemWrapper.appendChild(div);
     }
 
     enableSubmit() {
@@ -58,12 +59,35 @@ document.addEventListener( 'DOMContentLoaded', () => {
     event.preventDefault();
     submitButton.setAttribute('loading', '');
     const formData = new FormData( this );
+    const formDataObject = Array.from(formData.entries()).reduce((basket, [key, value]) => {
+      basket[key] = value;
+      return basket;
+    }, {});
+    const menuItems = Object.entries(formDataObject).filter(item => item[0].startsWith('text') || item[0].startsWith('icon'));
+    const menuItemsFormatted = menuItems.reduce((basket, [key, value]) => {
+      const index = Number(key.split('-')[1]) - 1;
+      const obj = basket[index] || {};
+      if (key.startsWith('icon')) {
+        obj.icon = value;
+      } else if (key.startsWith('text')) {
+        obj.text = value;
+      }
+      basket[index] = obj;
+      return basket
+    }, []);
+    const otherData = Object.entries(formDataObject).filter(item => !item[0].startsWith('text') && !item[0].startsWith('icon'));
+    const finalData = {
+      menus: menuItemsFormatted, 
+      ...Object.fromEntries(otherData)
+    };
+    
     fetch( '/wp-json/breeze-menu/v1/menu-items', {
       method: 'POST',
       headers: {
         'X-WP-Nonce': breezeMenuApiSettings.nonce,
+        'Content-Type': 'application/json'
       },
-      body: formData,
+      body: JSON.stringify(finalData),
     } )
       .then( ( response ) => {
         if ( response.ok ) {
