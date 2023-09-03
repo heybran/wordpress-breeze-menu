@@ -50,11 +50,15 @@
   background-color: var(--background-color);
   border-radius: 4px;
   box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .breeze-menu__text {
   background-color: var(--background-color);  
-  height: 100%;
   padding-inline: 10px;
   opacity: 0;
   transform: translateX(-10%);
@@ -64,6 +68,7 @@
   box-sizing: border-box;
   padding: 6px 12px;
   flex-grow: 1;
+  height: 40px;;
 }
 
 .breeze-menu-wrapper[data-position^="right"] .breeze-menu__text {

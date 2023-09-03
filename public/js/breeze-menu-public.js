@@ -39,6 +39,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 			customElements.whenDefined( 'breeze-icon' ).then( () => {
 				breezeMenuWrapper.classList.remove( 'hidden' );
+				document.addEventListener( 'click', ( event ) => {
+					if ( ! event.target.closest(' .breeze-menu-wrapper ' ) ) {
+						breezeMenuWrapper.classList.remove( 'show-texts' );
+					}
+				} );
 			} );
 		} );
 } );
