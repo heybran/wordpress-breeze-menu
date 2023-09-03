@@ -151,45 +151,7 @@ function create_breeze_menu_items($request) {
 
 	$breeze_menu_settings['breeze_menu_items'] = $menu_items;
 
-	// if (isset($body['breeze-menu-show'])) {
-	// 	$breeze_menu_settings['breeze_menu_show'] = 'on';
-	// 	$menu_items = array_filter($body, function ($key) {
-	// 		return $key !== 'breeze-menu-show';
-	// 	}, ARRAY_FILTER_USE_KEY);
-	// } else {
-	// 	$breeze_menu_settings['breeze_menu_show'] = 'off';
-	// 	$menu_items = $body;
-	// }
-
-	// for ($i = 1; $i <= count($menu_items) / 2; $i++) {
-	// 	$icon_key = "icon-" . $i;
-	// 	$text_key = "text-" . $i;
-	// 	$menu_item = array(
-	// 		"menu_icon" => $body[$icon_key],
-	// 		"menu_text" => $body[$text_key]
-	// 	);
-
-	// 	$breeze_menu_settings['breeze_menu_items'][] = $menu_item;
-	// }
-
 	$result = update_option('breeze-menu-settings', $breeze_menu_settings);
-
-	// Drop existing rows from the table
-	/**
-	 * This will cause unexpected bug as if $wpdb->insert() fails,
-	 * database table will be cleared out with no rows left.
-	 */
-	// $wpdb->query("TRUNCATE TABLE $table_name");
-
-	// foreach($menu_items as $item) {
-	// 	$wpdb->insert(
-	// 		$table_name,
-	// 		array(
-	// 			'menu_icon' => $item['icon'],
-	// 			'menu_text' => $item['text']
-	// 		)
-	// 		);
-	// }
 
 	if (!$result) {
 		$response = array(
