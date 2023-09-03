@@ -34,5 +34,4 @@ Add a sleek and modern floating menu to your site, allowing you to display socia
 
 == Changelog ==
 
-= 1.0.0 =
-Initial release of this plugin.
+* Initial release of this plugin.
