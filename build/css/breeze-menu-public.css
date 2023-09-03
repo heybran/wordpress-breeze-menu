@@ -3,11 +3,11 @@
  * included in this file.
  */
 
- .breeze-menu-wrapper.hidden {
+.breeze-menu-wrapper.hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
- }
+}
 
 .breeze-menu-wrapper {
   box-sizing: border-box;
@@ -15,40 +15,64 @@
   top: 50%;
   left: 3px;
   transform: translateY(-50%);
-  color: white;
+  color: var(--text-color);
   display: inline-flex;
   flex-direction: column;
   gap: 3px;
+}
+
+.breeze-menu-wrapper[data-position^="right"] {
+  left: unset;
+  right: 3px;
+}
+
+.breeze-menu-wrapper[data-position*="bottom"] {
+  top: unset;
+  transform: unset;
+  bottom: 3px;
 }
 
 .breeze-menu {
   align-items: center;
   gap: 3px;
   position: relative;
-  display: inline-grid;
-  grid-template-columns: auto 1fr;
-  align-items: stretch;
+  display: inline-flex;
+  align-items: center;
 }
 
-.breeze-menu span {
-  padding: 6px;
-  background-color: #191936;
-  border-radius: 4px;
-  box-sizing: border-box;
+.breeze-menu-wrapper[data-position^="right"] .breeze-menu {
+  flex-direction: row-reverse;
 }
 
 .breeze-menu__icon {
   line-height: 0;
+  padding: 6px;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .breeze-menu__text {
-  background-color: #191936;  
-  height: 100%;
+  background-color: var(--background-color);  
   padding-inline: 10px;
   opacity: 0;
   transform: translateX(-10%);
   pointer-events: none;
   transition: none;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 6px 12px;
+  flex-grow: 1;
+  height: 40px;;
+}
+
+.breeze-menu-wrapper[data-position^="right"] .breeze-menu__text {
+  transform: translateX(10%);
 }
 
 .breeze-menu-wrapper.show-texts .breeze-menu span:last-child {
@@ -56,6 +80,10 @@
   opacity: 1;
   pointer-events: initial;
   transition: .2s ease-in;
+}
+
+.breeze-menu-wrapper[data-position*="bottom"] .breeze-menu:last-child {
+  order: -1;
 }
 
 .breeze-menu-wrapper:not(.show-texts) .breeze-menu__close {

@@ -1,5 +1,3 @@
-// import { BreezeIcon } from 'breeze-components';
-
 import 'cucumber-components/dist/components/icon/icon.js';
 
 /* eslint-env browser */
@@ -12,6 +10,9 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			}
 			const breezeMenuWrapper = document.createElement( 'div' );
 			breezeMenuWrapper.className = 'breeze-menu-wrapper hidden';
+			breezeMenuWrapper.setAttribute( 'data-position', settings.breeze_menu_position );
+			breezeMenuWrapper.style.setProperty( '--background-color', settings.breeze_menu_background_color );
+			breezeMenuWrapper.style.setProperty( '--text-color', settings.breeze_menu_text_color );
 			document.body.appendChild( breezeMenuWrapper );
 			settings.breeze_menu_items.forEach( ( menu ) => {
 				const div = document.createElement( 'div' );
@@ -38,6 +39,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 			customElements.whenDefined( 'breeze-icon' ).then( () => {
 				breezeMenuWrapper.classList.remove( 'hidden' );
+				document.addEventListener( 'click', ( event ) => {
+					if ( ! event.target.closest(' .breeze-menu-wrapper ' ) ) {
+						breezeMenuWrapper.classList.remove( 'show-texts' );
+					}
+				} );
 			} );
 		} );
 } );
