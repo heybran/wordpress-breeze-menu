@@ -134,17 +134,17 @@ function create_breeze_menu_items($request) {
 		$breeze_menu_settings['breeze_menu_show'] = 'off';
 	} 
 
-	$breeze_menu_settings['breeze_menu_background_color'] = $body['breeze-menu-background-color'];
-	$breeze_menu_settings['breeze_menu_text_color'] = $body['breeze-menu-text-color'];
-	$breeze_menu_settings['breeze_menu_position'] = $body['breeze-menu-position'];
+	$breeze_menu_settings['breeze_menu_background_color'] = sanitize_text_field($body['breeze-menu-background-color']);
+	$breeze_menu_settings['breeze_menu_text_color'] = sanitize_text_field($body['breeze-menu-text-color']);
+	$breeze_menu_settings['breeze_menu_position'] = sanitize_text_field($body['breeze-menu-position']);
 
 	$menu_items = [];
 
 	if (count($body['menus']) > 0) {
 		foreach($body['menus'] as $menu) {
 			$menu_items[] = array(
-				"menu_icon" => $menu['icon'],
-				"menu_text" => $menu['text']
+				"menu_icon" => sanitize_text_field($menu['icon']),
+				"menu_text" => sanitize_text_field($menu['text'])
 			);
 		}
 	}
