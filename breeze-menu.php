@@ -4,8 +4,8 @@
  * Plugin Name:       Breeze Menu
  * Plugin URI:        https://github.com/heybran/wordpress-breeze-menu
  * Description:       Add a sleek and modern floating menu to your site, allowing you to display social media icons, important links, or any other type of content.
- * Requires at least: 5.2
- * Requires PHP:      5.6
+ * Requires at least: 6.3
+ * Requires PHP:      8.0
  * Author:            Brandon Zhang
  * Author URI:        https://github.com/heybran
  * License:           GPL-2.0+
