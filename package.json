@@ -1,6 +1,6 @@
 {
   "name": "breeze-menu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Add a sleek and modern floating menu to your site, allowing you to display social media icons, important links, or any other type of content.",
   "main": "index.js",
   "scripts": {
@@ -37,6 +37,6 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "cucumber-components": "file:../../../../../breeze-components/cucumber-components-0.0.1.tgz"
+    "cucumber-components": "file:./cucumber-components-0.0.1.tgz"
   }
 }
