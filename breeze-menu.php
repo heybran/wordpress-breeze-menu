@@ -54,6 +54,28 @@ define( 'BREEZE_MENU_PLUGIN_FILE', __FILE__ );
 function activate_breeze_menu() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-breeze-menu-activator.php';
 	Breeze_Menu_Activator::activate();
+	breeze_menu_create_initial_options();
+}
+
+function breeze_menu_create_initial_options() {
+	$breeze_menu_settings = [
+		'breeze_menu_show' => 'on',
+		'breeze_menu_items' => [
+			[
+				"menu_icon" => 'telephone',
+				"menu_text" => '0591-12345678'
+			],
+			[
+				"menu_icon" => 'phone',
+				"menu_text" => '13660001234'
+			]
+		],
+		'breeze_menu_background_color' => '#191936',
+		'breeze_menu_text_color' => '#ffffff',
+		'breeze_menu_position' => 'left:center',
+	];
+
+	add_option('breeze-menu-settings', $breeze_menu_settings);
 }
 
 register_activation_hook( __FILE__, 'activate_breeze_menu' );
