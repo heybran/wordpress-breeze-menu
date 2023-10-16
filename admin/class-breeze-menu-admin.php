@@ -167,9 +167,9 @@ class Breeze_Menu_Admin {
 						// }
 						$breeze_menu_settings = get_option('breeze-menu-settings');
 						?>
-					<breeze-button
+					<cc-button
 						onclick="BreezeMenuAdmin.addMenuItem()"
-						><?php echo esc_html__('Add menu item', 'add-menu-item') ?></breeze-button>
+						><?php echo esc_html__('Add menu item', 'add-menu-item') ?></cc-button>
 					<hr />
 					<cc-radio-group 
 						name="breeze-menu-position" 
@@ -198,19 +198,19 @@ class Breeze_Menu_Admin {
 							<?php if ($breeze_menu_settings['breeze_menu_position'] === 'right:bottom') echo 'checked'; ?>
 						></cc-radio>
 					</cc-radio-group>
-					<breeze-text-field 
+					<cc-text-field 
 						label="Menu background color" 
 						name="breeze-menu-background-color"
 						oninput="BreezeMenuAdmin.enableSubmit();"
 						value="<?php echo $breeze_menu_settings['breeze_menu_background_color']; ?>"
 					>
-					</breeze-text-field>
-					<breeze-text-field 
+					</cc-text-field>
+					<cc-text-field 
 						label="Menu text color" 
 						name="breeze-menu-text-color"
 						oninput="BreezeMenuAdmin.enableSubmit();"
 						value="<?php echo $breeze_menu_settings['breeze_menu_text_color']; ?>"
-					></breeze-text-field>
+					></cc-text-field>
 					<cc-checkbox 
 						name="breeze-menu-show" 
 						onchange="BreezeMenuAdmin.enableSubmit();" 
@@ -219,7 +219,7 @@ class Breeze_Menu_Admin {
 					>
 						Show Floating Menu
 					</cc-checkbox>
-					<breeze-button type="submit" variant="primary" disabled><?php echo esc_html__('Save', 'save') ?></breeze-button>
+					<cc-button type="submit" theme="primary" disabled><?php echo esc_html__('Save', 'save') ?></cc-button>
 					<script>
 						fetch('/wp-json/breeze-menu/v1/menu-items')
 						.then((res) => {
@@ -237,25 +237,26 @@ class Breeze_Menu_Admin {
 								const div = document.createElement('div');
 								div.className = 'breeze-menu-item';
 								div.innerHTML = `
-									<breeze-select 
+									<cc-select 
 										label="Menu icon" 
 										style="width: 10em;" 
 										name="icon-${index+1}"
 										onchange="BreezeMenuAdmin.enableSubmit();"
 									>
-										<breeze-option ${menu.menu_icon === 'phone' ? 'selected' : ''} value="phone" text="Phone"></breeze-option>
-										<breeze-option ${menu.menu_icon === 'telephone' ? 'selected' : ''} value="telephone" text="Telephone"></breeze-option>
-										<breeze-option ${menu.menu_icon === 'email' ? 'selected' : ''} value="email" text="Email"></breeze-option>
-									</breeze-select>
-									<breeze-text-field 
+										<cc-option ${menu.menu_icon === 'phone' ? 'selected' : ''} value="phone" text="Phone"></cc-option>
+										<cc-option ${menu.menu_icon === 'telephone' ? 'selected' : ''} value="telephone" text="Telephone"></cc-option>
+										<cc-option ${menu.menu_icon === 'email' ? 'selected' : ''} value="email" text="Email"></cc-option>
+									</cc-select>
+									<cc-text-field 
 										label="Menu text" 
 										name="text-${index+1}" 
 										value="${menu.menu_text}"
 										oninput="BreezeMenuAdmin.enableSubmit()"
-										></breeze-text-field>
-									<breeze-button theme="icon">
-										<breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
-									</breeze-button>
+										></cc-text-field>
+									<cc-button theme="icon" 
+										onclick="this.closest('.breeze-menu-item').remove();BreezeMenuAdmin.enableSubmit();">
+										<cc-icon icon="cross" style="--size: 2.3em;"></cc-icon>
+									</cc-button>
 								`;
 								BreezeMenuAdminItemWrapper.appendChild(div);
 							});

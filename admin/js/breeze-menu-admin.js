@@ -17,7 +17,7 @@ import 'cucumber-components/dist/components/radio-group/radio-group.js';
 document.addEventListener( 'DOMContentLoaded', () => {
   const BreezeMenuAdminForm = document.querySelector('[name="breeze-menu-admin-form"]');
   const BreezeMenuAdminItemWrapper = BreezeMenuAdminForm.querySelector('.breeze-menu-item-wrapper');
-  const submitButton = BreezeMenuAdminForm?.querySelector('breeze-button[type="submit"]');
+  const submitButton = BreezeMenuAdminForm?.querySelector('cc-button[type="submit"]');
 
   class BreezeMenuAdmin {
     addMenuItem() {
@@ -25,24 +25,24 @@ document.addEventListener( 'DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = 'breeze-menu-item';
       div.innerHTML = `
-        <breeze-select 
+        <cc-select 
           label="Menu icon" 
           style="width: 10em;" 
           name="icon-${itemsCount+1}"
           onchange="BreezeMenuAdmin.enableSubmit();"
           >
-          <breeze-option selected value="phone" text="Phone"></breeze-option>
-          <breeze-option value="telephone" text="Telephone"></breeze-option>
-          <breeze-option value="email" text="Email"></breeze-option>
-        </breeze-select>
-        <breeze-text-field 
+          <cc-option selected value="phone" text="Phone"></cc-option>
+          <cc-option value="telephone" text="Telephone"></cc-option>
+          <cc-option value="email" text="Email"></cc-option>
+        </cc-select>
+        <cc-text-field 
           label="Menu Text" 
           name="text-${itemsCount+1}"
           oninput="BreezeMenuAdmin.enableSubmit()"
-        ></breeze-text-field>
-        <breeze-button theme="icon">
-          <breeze-icon icon="cross" style="--size: 2.3em;"></breeze-icon>
-        </breeze-button>
+        ></cc-text-field>
+        <cc-button theme="icon" onclick="this.closest('.breeze-menu-item').remove();BreezeMenuAdmin.enableSubmit();">
+          <cc-icon icon="cross" style="--size: 2.3em;"></cc-icon>
+        </cc-button>
       `;
       BreezeMenuAdminItemWrapper.appendChild(div);
     }

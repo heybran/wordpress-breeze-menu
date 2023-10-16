@@ -21,7 +21,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					<span class="breeze-menu__icon"
 						onclick="this.closest('.breeze-menu-wrapper').classList.add('show-texts')"
 					>
-						<breeze-icon icon="${ menu.menu_icon }" style="--size: 1.5em;"></breeze-icon>
+						<cc-icon icon="${ menu.menu_icon }" style="--size: 1.5em;"></cc-icon>
 					</span>
           <span class="breeze-menu__text">${ menu.menu_text }</span>
         `;
@@ -32,12 +32,12 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			div.className = 'breeze-menu';
 			div.innerHTML = `
 				<span class="breeze-menu__icon breeze-menu__close" onclick="this.closest('.breeze-menu-wrapper').classList.remove('show-texts')">
-					<breeze-icon icon="cross" style="--size: 1.5em;"></breeze-icon>
+					<cc-icon icon="cross" style="--size: 1.5em;"></cc-icon>
 				</span>
 			`;
 			breezeMenuWrapper.appendChild( div );
 
-			customElements.whenDefined( 'breeze-icon' ).then( () => {
+			customElements.whenDefined( 'cc-icon' ).then( () => {
 				breezeMenuWrapper.classList.remove( 'hidden' );
 				document.addEventListener( 'click', ( event ) => {
 					if ( ! event.target.closest(' .breeze-menu-wrapper ' ) ) {
